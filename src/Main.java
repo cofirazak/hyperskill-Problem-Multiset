@@ -63,7 +63,7 @@ interface Multiset<E> {
 
 class HashMultiset<E> implements Multiset<E> {
 
-    private final Map<E, Integer> map = new HashMap<>(16);
+    private Map<E, Integer> map = new HashMap<>();
 
     @Override
     public final void add(E elem) {
@@ -86,7 +86,13 @@ class HashMultiset<E> implements Multiset<E> {
 
     @Override
     public final void intersect(Multiset<E> other) {
-        map.forEach((key, value) -> map.put(key, Math.min(value, other.getMultiplicity(key))));
+        final Map<E, Integer> newMap = new HashMap<>(map.size());
+        map.forEach((key, val) -> {
+            if (other.getMultiplicity(key) > 0) {
+                newMap.put(key, Math.min(val, other.getMultiplicity(key)));
+            }
+        });
+        map = newMap;
     }
 
     @Override
